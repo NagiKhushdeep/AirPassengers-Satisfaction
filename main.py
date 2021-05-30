@@ -2,14 +2,11 @@ import pickle
 import streamlit as st
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+import category_encoders as ce
 
 model = pickle.load(open("airmodel.pkl","rb"))
 
 scaler = pickle.load(open("scaler.pkl","rb"))
-Gender_encoder = pickle.load(open("Gender_encoder.pkl","rb"))
-Customer_Type_encoder = pickle.load(open("Customer_Type_encoder.pkl","rb"))
-Type_of_Travel_encoder = pickle.load(open("Type_of_Travel_encoder.pkl","rb"))
-Class_encoder = pickle.load(open("Class_encoder.pkl","rb"))
 
  
 page_bg_img = '''
@@ -79,6 +76,11 @@ def input_page():
                        wifi_service,ease_ol_book,food,ol_boarding,seat,
                        ent,on_board_service,Leg,Bagg,Checkin,Inflight_service,
                        cleanliness,dept_delay,arr_delay]])
+        test = encoder.fit_transform(test)
+        test['Age'] = scaler.transform(np.array(test['Age']).reshape(-1,1))
+        test['Flight Distance'] = scaler.transform(np.array(est['Flight Distance']).reshape(-1,1))
+        test['Departure Delay in Minutes'] = scaler.transform(np.array(test['Departure Delay in Minutes']).reshape(-1,1))
+        test['Arrival Delay in Minutes'] = scaler.transform(np.array(test['Arrival Delay in Minutes']).reshape(-1,1))
         result = model.predict(test)[0]
         if result==0:
             st.markdown('<h4><b>The Passenger was NOT SATISFIED.</b></h4>', unsafe_allow_html=True)
